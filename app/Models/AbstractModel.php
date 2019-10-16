@@ -23,6 +23,8 @@ abstract class AbstractModel
             $tab = explode('\\', get_class($this));
             $class = end($tab);
             $this->model = strtolower(str_replace('Model', '', $class)) . 's';
+            if ($class === 'AddressModel')
+                $this->model = strtolower(str_replace('Model', '', $class)) . 'es';
         }
     }
 
@@ -93,6 +95,16 @@ abstract class AbstractModel
     public function update($id, $fields)
     {
         //@todo
+        $sqlParts = [];
+        $attributes = [];
+        foreach ($fields as $k => $v) {
+            $sqlParts[] = "$k = ?";
+            $attributes[] = $v;
+        }
+        $sqlPart = implode(', ', $sqlParts);
+        return $this->query(
+            "UPDATE {$this->table} SET {$sqlPart} WHERE id = {$id}", $attributes
+        );
     }
 
     /**
@@ -103,8 +115,7 @@ abstract class AbstractModel
      */
     public function delete($id)
     {
-        return $this->query("DELETE FROM {$this->table} WHERE id = ?", [$id],
-            true);
+        return $this->query("DELETE FROM {$this->table} WHERE id = ?", [$id], true);
     }
 
     /**

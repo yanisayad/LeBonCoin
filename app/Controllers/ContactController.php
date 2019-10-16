@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Controllers\ControllerInterface;
+use App\Utils\Palindrome;
 use InvalidArgumentException;
 use Exception;
 
@@ -18,7 +19,9 @@ class ContactController extends MainController implements ControllerInterface
     {
         parent::__construct();
 
-        $this->userId = $_SESSION['auth']['id'];
+        // $this->userId = $_SESSION['auth']['id'];
+        $this->userId = 2;
+        $this->loadModel("Contact");
     }
 
     /**
@@ -64,6 +67,26 @@ class ContactController extends MainController implements ControllerInterface
     public function edit()
     {
         //@todo
+        $contact = $this->Contact->findById($_GET['id']);
+
+
+        $error = false;
+        if (!empty($_POST)) {
+            $response = $this->sanitize($_POST);
+            if ($response["response"]) {
+                $result = $this->Contact->update($_GET['id'],[
+                    'nom'    => $response['nom'],
+                    'prenom' => $response['prenom'],
+                    'email'  => $response['email']
+                ]);
+                if ($result) {
+                    header('Location: /index.php?p=contact.index');
+                }
+            } else {
+                $error = true;
+            }
+        }
+        echo $this->twig->render('edit.html.twig', ['contact' => $contact,'error' => $error]);
     }
 
     /**
@@ -85,33 +108,39 @@ class ContactController extends MainController implements ControllerInterface
      */
     public function sanitize(array $data = []): array
     {
-        if (empty($nom)) {
+        if (empty($data["nom"])) {
             throw new Exception('Le nom est obligatoire');
         }
 
-        if (empty($prenom)) {
+        if (empty($data["prenom"])) {
             throw new Exception('Le prenom est obligatoire');
         }
 
-        if (empty($email)) {
+        if (empty($data["email"])) {
             throw new Exception('Le email est obligatoire');
-        } elseif (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        } elseif (!filter_var($data["email"], FILTER_VALIDATE_EMAIL)) {
             throw new InvalidArgumentException('Le format de l\'email est invalide');
         }
 
-        $prenom = strtoupper($data['prenom']);
-        $nom    = strtoupper($data['nom']);
-        $email  = strtolower($data['email']);
+        $firstname = ucwords($data['prenom']);
+        $lastname  = ucwords($data['nom']);
+        $email     = strtolower($data['email']);
 
-        $isPalindrome = $this->apiClient('palindrome', ['name' => $nom]);
-        $isEmail = $this->apiClient('email', ['email' => $email]);
-        if ((!$isPalindrome->response) && $isEmail->response && $prenom) {
-            return [
-                'response' => true,
-                'email'    => $email,
-                'prenom'   => $prenom,
-                'nom'      => $nom
-            ];
+        $lastname_palindrome = new Palindrome(strtolower($lastname));
+        if (!$lastname_palindrome->isValid()) {
+            throw new Exception('Le format du nom ne doit pas être un palindrome');
         }
+        $firstname_palindrome = new Palindrome($firstname);
+        if (!$firstname_palindrome->isValid()) {
+            throw new Exception('Le format du prenom ne doit pas être un palindrome');
+        }
+
+        // $isEmail = $this->apiClient('email', ['email' => $email]);
+        return [
+            'response' => true,
+            'email'    => $email,
+            'prenom'   => $firstname,
+            'nom'      => $lastname
+        ];
     }
 }

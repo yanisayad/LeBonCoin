@@ -17,7 +17,7 @@ class ContactModel extends AbstractModel
     {
         parent::__construct($database);
 
-        $this->model = new AbstractModel();
+        // $this->model = new AbstractModel($database);
     }
 
     /**

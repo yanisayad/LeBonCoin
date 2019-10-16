@@ -2,6 +2,7 @@
 
 namespace App\Components;
 use App\Components\Api\ApiService;
+use App\Utils\Palindrome;
 
 class Api extends ApiService
 {
@@ -16,17 +17,15 @@ class Api extends ApiService
 
         $name = $this->request['name'];
         // TODO ecrire un objet palindrome
-        //$palindrome = new Palindrome($name);
+        $palindrome = new Palindrome($name);
 
         if ($name) {
             // TODO ecrire la methode isValid() de l'objet palindrome et la tester avec PHPUnit
-            /*
             if ($palindrome->isValid()) {
                 $this->response($this->json(["response" => true]), 200);
             } else {
                 $this->response($this->json(["response" => false]), 200);
             }
-            */
         }
     }
 
@@ -35,7 +34,7 @@ class Api extends ApiService
      */
     public function email()
     {
-        if ($this->getRequestMethod() != "POST") {
+        if ($this->getRequestMethod() !== "POST") {
             $this->response('', 406);
         }
         $email = $this->_request['email'];

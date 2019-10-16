@@ -22,19 +22,19 @@
                 <th class="text-center">Action</th>
             </tr>
             </thead>
-            {% for addresse in addresses %}
+            {% for address in addresses %}
                 <tr>
-                    <td>{{ addresse.id|e }}</td>
-                    <td>{{ addresse.number|e }}</td>
-                    <td>{{ addresse.street|e }}</td>
-                    <td>{{ addresse.postalCode|e }}</td>
-                    <td>{{ addresse.city|e }}</td>
-                    <td>{{ addresse.country|e }}</td>
+                    <td>{{ address.id|e }}</td>
+                    <td>{{ address.number|e }}</td>
+                    <td>{{ address.street|e }}</td>
+                    <td>{{ address.postalCode|e }}</td>
+                    <td>{{ address.city|e }}</td>
+                    <td>{{ address.country|e }}</td>
                     <td class="text-center">
-                        <a class='btn btn-info btn-xs' href="/public/index.php?p=address.edit&id={{ addresse.id }}"><span
-                                    class="glyphicon glyphicon-edit"></span> Edit</a>
-                        <a href="/address.delete/{{ addresse.id }}" class="btn btn-danger btn-xs"><span
-                                    class="glyphicon glyphicon-remove"></span> Del</a></td>
+                        <a class='btn btn-info btn-xs' href="/public/index.php?p=address.edit&id={{ address.id }}"><span
+                                    class="glyphicon glyphicon-edit"></span> Edition</a>
+                        <a href="/public/index.php?p=address.delete&id={{ address.id }}" class="btn btn-danger btn-xs"><span
+                                    class="glyphicon glyphicon-remove"></span> Suppression</a></td>
                 </tr>
             {% endfor %}
 

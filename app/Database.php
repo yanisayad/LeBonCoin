@@ -2,7 +2,9 @@
 
 namespace App;
 
+use Exception;
 use \PDO;
+use PDOException;
 
 class Database
 {
@@ -28,7 +30,7 @@ class Database
         $dbName,
         $dbUser = 'root',
         $dbPass = 'root',
-        $dbHost = 'localhost'
+        $dbHost = 'lbctest-mysql'
     ) {
         $this->dbName = $dbName;
         $this->dbUser = $dbUser;
@@ -41,8 +43,11 @@ class Database
      */
     private function setPDO()
     {
-        $pdo = new PDO('mysql:dbname=' . $this->dbName . ';host='
-            . $this->dbHost, $this->dbUser, $this->dbPass);
+        $pdo = new PDO(
+            "mysql:host=lbctest-mysql;dbname={$this->dbName}",
+            "root",
+            "root"
+        );
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $this->pdo = $pdo;
     }

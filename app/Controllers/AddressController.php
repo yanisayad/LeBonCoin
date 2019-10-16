@@ -13,7 +13,7 @@ class AddressController extends MainController implements ControllerInterface
     {
         parent::__construct();
 
-        $this->loadModel('Addresse');
+        $this->loadModel('Address');
         $this->loadModel('Contact');
     }
 
@@ -24,7 +24,8 @@ class AddressController extends MainController implements ControllerInterface
     {
         $idContact = intval($_GET['id']);
         $contact = $this->Contact->findById($idContact);
-        $address = $this->Addresse->getByContact($idContact);
+        $address = $this->Address->getByContact($idContact);
+
         echo $this->twig->render('addresslist.html.twig', [
             'addresses' => $address,
             'idContact' => $idContact,
@@ -47,7 +48,7 @@ class AddressController extends MainController implements ControllerInterface
             if ($response["response"]) {
 
                 $idContact = $response['idContact'];
-                $result = $this->Addresse->create([
+                $result = $this->Address->create([
                     'number'     => $response['number'],
                     'city'       => $response['city'],
                     'country'    => $response['country'],
@@ -86,8 +87,8 @@ class AddressController extends MainController implements ControllerInterface
 
 
             if ($response["response"]) {
-                $addresse = $this->Addresse->findById($id);
-                $result = $this->Addresse->update($id,
+                $address = $this->Address->findById($id);
+                $result = $this->Address->update($id,
                     [
                         'number'     => $response['number'],
                         'city'       => $response['city'],
@@ -96,7 +97,7 @@ class AddressController extends MainController implements ControllerInterface
                         'street'     => $response['street'],
                     ]);
                 if ($result) {
-                    header("Location: /index.php?p=address.index&id=$addresse->idContact");
+                    header("Location: /index.php?p=address.index&id=$address->idContact");
                 } else {
                     $error = true;
                     $this->twig->render('addressadd.html.twig',
@@ -108,11 +109,10 @@ class AddressController extends MainController implements ControllerInterface
                 $error = true;
                 $this->twig->render('addressadd.html.twig',
                     ["idContact" => $id,'error' => $error]);
-
             }
         }
 
-        $data = $this->Addresse->findById($id);
+        $data = $this->Address->findById($id);
         echo $this->twig->render('addressadd.html.twig',
             [
                 'data'      => $data,
@@ -125,7 +125,11 @@ class AddressController extends MainController implements ControllerInterface
      */
     public function delete()
     {
-       //@todo
+        $address = $this->Address->findById($_GET['id']);
+        $result = $this->Address->delete($_GET['id']);
+        if ($result) {
+            header("Location: /index.php?p=address.index&id=$address->idContact");
+        }
     }
 
 
@@ -136,17 +140,16 @@ class AddressController extends MainController implements ControllerInterface
      *
      * @return array
      */
-    public function sanitize($data = [])
+    public function sanitize($data = []): array
     {
         $number     = $_POST['number'];
         $city       = strtoupper($_POST['city']);
         $country    = strtoupper($_POST['country']);
         $street     = strtoupper($_POST['street']);
         $idContact  = intval($_POST['idContact']);
+        $postalCode = $_POST['postalCode'];
 
-        if ($number && $city && $country && $postalCode && $street
-            && $idContact
-        ) {
+        if ($number && $city && $country && $postalCode && $street && $idContact) {
             return [
                 'response'   => true,
                 'number'     => $_POST['number'],

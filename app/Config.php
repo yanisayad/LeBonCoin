@@ -29,7 +29,7 @@ class Config
         $this->settings = [
             "db_user" => "newuser",
             "db_pass" => "password",
-            "db_host" => "localhost",
+            "db_host" => "127.0.0.1",
             "db_name" => "crm"
         ];
     }
