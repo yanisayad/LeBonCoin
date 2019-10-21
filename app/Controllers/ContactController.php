@@ -19,8 +19,10 @@ class ContactController extends MainController implements ControllerInterface
     {
         parent::__construct();
 
-        // $this->userId = $_SESSION['auth']['id'];
-        $this->userId = 2;
+        $this->loadModel('User');
+        foreach ($this->User->getFirstUserId()[0] as $user) {
+            $this->userId = $user;
+        }
         $this->loadModel("Contact");
     }
 
@@ -51,8 +53,9 @@ class ContactController extends MainController implements ControllerInterface
                     'email'  => $response['email'],
                     'userId' => $this->userId
                 ]);
+
                 if ($result) {
-                    header('Location: /index.php?p=contact.index');
+                    header('Location: /?p=contact.index');
                 }
             } else {
                 $error = true;
@@ -66,21 +69,21 @@ class ContactController extends MainController implements ControllerInterface
      */
     public function edit()
     {
-        //@todo
         $contact = $this->Contact->findById($_GET['id']);
-
 
         $error = false;
         if (!empty($_POST)) {
             $response = $this->sanitize($_POST);
+
             if ($response["response"]) {
                 $result = $this->Contact->update($_GET['id'],[
                     'nom'    => $response['nom'],
                     'prenom' => $response['prenom'],
                     'email'  => $response['email']
                 ]);
+
                 if ($result) {
-                    header('Location: /index.php?p=contact.index');
+                    header('Location: /?p=contact.edit&id=' . $_GET['id']);
                 }
             } else {
                 $error = true;
@@ -96,7 +99,7 @@ class ContactController extends MainController implements ControllerInterface
     {
         $result = $this->Contact->delete($_GET['id']);
         if ($result) {
-            header('Location: /index.php?p=contact.index');
+            header('Location: /?p=contact.index');
         }
     }
 
@@ -122,25 +125,19 @@ class ContactController extends MainController implements ControllerInterface
             throw new InvalidArgumentException('Le format de l\'email est invalide');
         }
 
-        $firstname = ucwords($data['prenom']);
-        $lastname  = ucwords($data['nom']);
+        $firstname = ucwords(strtolower($data['prenom']));
+        $lastname  = ucwords(strtolower($data['nom']));
         $email     = strtolower($data['email']);
 
-        $lastname_palindrome = new Palindrome(strtolower($lastname));
-        if (!$lastname_palindrome->isValid()) {
-            throw new Exception('Le format du nom ne doit pas être un palindrome');
+        $isValidName = $this->apiClient('palindrome', ['name' => $lastname]);
+        $isEmail = $this->apiClient('email', ['email' => $email]);
+        if ($isEmail && $firstname && $isValidName) {
+            return [
+                'response' => true,
+                'email'    => $email,
+                'prenom'   => $firstname,
+                'nom'      => $lastname
+            ];
         }
-        $firstname_palindrome = new Palindrome($firstname);
-        if (!$firstname_palindrome->isValid()) {
-            throw new Exception('Le format du prenom ne doit pas être un palindrome');
-        }
-
-        // $isEmail = $this->apiClient('email', ['email' => $email]);
-        return [
-            'response' => true,
-            'email'    => $email,
-            'prenom'   => $firstname,
-            'nom'      => $lastname
-        ];
     }
 }

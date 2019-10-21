@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Model;
+namespace App\Models;
 
 use App\Models\AbstractModel;
 
@@ -15,5 +15,15 @@ class UserModel extends AbstractModel
     public function login()
     {
         //@TODO
+    }
+
+    /**
+     * Méthode de récupération le premier utilisateur
+     *
+     * @return array|bool|mixed|\PDOStatement
+     */
+    public function getFirstUserId()
+    {
+        return $this->query("SELECT id FROM {$this->table} ORDER BY id ASC LIMIT 1");
     }
 }

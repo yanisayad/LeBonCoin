@@ -39,7 +39,7 @@ class MainController
      */
     public function apiClient($methode, $datas = [])
     {
-        $api = $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . $methode;
+        $api = 'lbctest-webserver' . "/api/" . $methode;
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $api);
         curl_setopt($curl, CURLOPT_POST, true);
@@ -47,6 +47,7 @@ class MainController
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         $return = curl_exec($curl);
         curl_close($curl);
-        return json_decode($return);
+        return $return;
+
     }
 }

@@ -6,8 +6,8 @@ DROP TABLE IF EXISTS `users`;
 -- Sql - table users
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `login` varchar(225) NOT NULL,
-  `email` varchar(225) NOT NULL,
+  `login` varchar(225) NOT NULL UNIQUE,
+  `email` varchar(225) NOT NULL UNIQUE,
   `password` varchar(225) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -48,16 +48,5 @@ COMMIT;
 -- Sql - initialisation user de test
 
 INSERT INTO `users` (`id`, `login`, `email`, `password`) VALUES
-(1, 'admin', 'lebonoin@test.fr', '21232f297a57a5a743894a0e4a801fc3'),
-(2, 'admin', 'yanis@test.fr', '21232f297a57a5a743894a0e4a801fc3');
-COMMIT;
-
-INSERT INTO `contacts` (`id`, `nom`, `prenom`, `email`, `userId`) VALUES
-(1, 'AYAD', 'Yanis', 'ayad_y@etna-alternance.net', 2);
-COMMIT;
-
-INSERT INTO `addresses` (`id`, `number`, `street`, `postalCode`, `city`, `country`, `idContact`) VALUES
-(1, 7, 'rue Maurice Grandcoing', 94200, 'Ivry-sur-seine', 'France', 1),
-(2, 76, 'rue Colonel Fabien', 94200, 'Ivry-sur-seine', 'France', 1),
-(3, 26, 'avenue Cusino', 93600, 'Aulnay-sous-bois', 'France', 1);
+(1, 'admin', 'lebonoin@test.fr', '21232f297a57a5a743894a0e4a801fc3');
 COMMIT;

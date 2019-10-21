@@ -58,7 +58,7 @@ class AddressController extends MainController implements ControllerInterface
                 ]);
 
                 if ($result) {
-                    header("Location: /index.php?p=address.index&id=$idContact");
+                    header("Location: /?p=address.index&id=$idContact");
                 } else {
                     $error = true;
                     $this->twig->render('addressadd.html.twig',
@@ -97,7 +97,7 @@ class AddressController extends MainController implements ControllerInterface
                         'street'     => $response['street'],
                     ]);
                 if ($result) {
-                    header("Location: /index.php?p=address.index&id=$address->idContact");
+                    header("Location: /?p=address.index&id=$address->idContact");
                 } else {
                     $error = true;
                     $this->twig->render('addressadd.html.twig',
@@ -128,7 +128,7 @@ class AddressController extends MainController implements ControllerInterface
         $address = $this->Address->findById($_GET['id']);
         $result = $this->Address->delete($_GET['id']);
         if ($result) {
-            header("Location: /index.php?p=address.index&id=$address->idContact");
+            header("Location: /?p=address.index&id=$address->idContact");
         }
     }
 

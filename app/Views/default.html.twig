@@ -40,7 +40,7 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" href="/public/index.php?p=contact.index">Accueil <span class="sr-only"></span></a>
+                    <a class="nav-link" href="?p=contact.index">Accueil <span class="sr-only"></span></a>
                 </li>
             </ul>
         </div>
@@ -75,7 +75,6 @@
         } else {
             $('#nameStatus').empty().append("<span class='text-danger'>- Le nom du contact ne peut être nul </span>");
         }
-
     });
 
     $("#checkEmail").click(function () {
@@ -90,13 +89,12 @@
                 },
                 success: function (res) {
                     $('#progress').hide();
-                    if (res.response == true) {
+                    if (res == true) {
                         $('#error').hide();
                         $('#success').show();
                     } else {
                         $('#success').hide();
                         $('#error').show();
-                        console.log(res.message);
                     }
                 }
             });
