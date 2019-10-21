@@ -24,7 +24,7 @@ class Palindrome
      */
     public function isValid()
     {
-        if ($this->name === strrev($this->name))
+        if (strtolower($this->name) === strtolower(strrev($this->name)))
             return false;
         return true;
     }

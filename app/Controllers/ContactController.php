@@ -83,7 +83,7 @@ class ContactController extends MainController implements ControllerInterface
                 ]);
 
                 if ($result) {
-                    header('Location: /?p=contact.edit&id=' . $_GET['id']);
+                    header('Location: /?p=contact.index');
                 }
             } else {
                 $error = true;
@@ -120,7 +120,7 @@ class ContactController extends MainController implements ControllerInterface
         }
 
         if (empty($data["email"])) {
-            throw new Exception('Le email est obligatoire');
+            throw new Exception('L\'email est obligatoire');
         } elseif (!filter_var($data["email"], FILTER_VALIDATE_EMAIL)) {
             throw new InvalidArgumentException('Le format de l\'email est invalide');
         }
@@ -131,13 +131,18 @@ class ContactController extends MainController implements ControllerInterface
 
         $isValidName = $this->apiClient('palindrome', ['name' => $lastname]);
         $isEmail = $this->apiClient('email', ['email' => $email]);
-        if ($isEmail && $firstname && $isValidName) {
-            return [
-                'response' => true,
-                'email'    => $email,
-                'prenom'   => $firstname,
-                'nom'      => $lastname
-            ];
+
+        $return = [
+            'response' => true,
+            'email'    => $email,
+            'prenom'   => $firstname,
+            'nom'      => $lastname
+        ];
+
+        if (!json_decode($isEmail) || empty($firstname) || !json_decode($isValidName)) {
+            $return['response'] = false;
         }
+
+        return $return;
     }
 }

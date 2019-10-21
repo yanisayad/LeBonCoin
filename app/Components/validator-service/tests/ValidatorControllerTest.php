@@ -34,7 +34,7 @@ class ValidatorControllerTest extends WebTestCase
 
     public function testPalindromeName()
     {
-        $this->client->request('POST', '/api/palindrome', ['name' => 'kayak']);
+        $this->client->request('POST', '/api/palindrome', ['name' => 'Kayak']);
 
         $response = preg_replace('/HTTP(.*)index/s', "", $this->client->getResponse());
 
